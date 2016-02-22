@@ -25,7 +25,6 @@ package alanutilites.util.popup_window;
 import alanutilites.util.Text;
 import java.awt.Point;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.MouseInfo;
@@ -35,7 +34,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import javax.swing.JComponent;
 import static javax.swing.SwingUtilities.convertPointFromScreen;
 import javax.swing.Timer;
 

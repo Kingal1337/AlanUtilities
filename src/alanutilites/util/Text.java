@@ -33,7 +33,6 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import javax.swing.JLabel;
 
 /**
  * 

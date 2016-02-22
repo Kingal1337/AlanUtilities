@@ -35,8 +35,6 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
-import java.awt.LayoutManager;
-import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -51,10 +49,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JLabel;
@@ -70,27 +66,7 @@ import static javax.swing.WindowConstants.HIDE_ON_CLOSE;
  * @version 1.0
  * @since 1.1
  */
-public class AFrame extends JFrame{
-    
-    public static void main(String args[]){
-        JPanel panel = new JPanel();
-        JPanel pan = new JPanel();
-        pan.setBackground(Color.blue);
-        panel.setBackground(Color.GREEN);
-//        panel.setBounds(10, 10, 50, 50);
-        AFrame frame = new AFrame("TitleasfdasfasdfadsfashidasdfasdfasdfasdfasdfasdfadsfhhhkafkhkgkskgksgdkgdkhsgdkhsdksdksdgssgsdfgsdfgsdfgdfasdfasdfasdfasdfadsfadfsPOOP");
-//        JFrame frame = new JFrame("Title");
-//        frame.setLayout(null);
-        frame.add(panel);
-        
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(true);
-        frame.setPreferredSize(new Dimension(500,500));
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    }
-    
+public class AFrame extends JFrame{    
     private static final Font DEFAULT_FONT = new Font("Arial",1,12);
     private static final Color DEFAULT_FRAME_COLOR = new Color(51, 51, 51);
     private static final Color DEFAULT_BORDER_COLOR = new Color(51, 51, 51);
