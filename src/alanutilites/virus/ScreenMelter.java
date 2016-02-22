@@ -22,8 +22,8 @@
  */
 package alanutilites.virus;
 
+import alanutilites.util.SystemUtil;
 import alanutilites.util.random.Random;
-import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -32,8 +32,6 @@ import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -50,9 +48,20 @@ import javax.swing.Timer;
  * @version 1.0
  */
 public class ScreenMelter extends Frame{
+    public static void main(String[] args){        
+        ScreenMelter melter = new ScreenMelter(Color.BLACK, 1, 1, "1234");
+        melter.debugMode(true);
+        melter.setTerminateOnClose(true);
+        melter.start();
+    }
+    
     private String password;
     private String realPassword;
+    private int speed;
     
+    private int initHours;
+    private int initSeconds;
+    private int initMinutes;
     
     private int hours;
     private int seconds;
@@ -65,9 +74,8 @@ public class ScreenMelter extends Frame{
     private ScreenMelterPanel panel;
     private int pixelSize;
     
-    
     /**
-     * Initalizes a new ScreenMelter
+     * Initializes a new ScreenMelter
      * @param color  The color of the background
      * @param pixelSize  the pixel size of the columns (Smaller looks cooler)
      * @param speed  the speed the screen melts
@@ -76,13 +84,14 @@ public class ScreenMelter extends Frame{
     public ScreenMelter(Color color, int pixelSize, int speed, String realPassword){
         this.realPassword = realPassword;
         this.pixelSize = pixelSize;
+        this.speed = speed;
         password = "";
         allColumns = new ArrayList<>();
         
         panel = new ScreenMelterPanel(color);
         add(panel);
         
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         KeyboardFocusManager manager
                 = KeyboardFocusManager.getCurrentKeyboardFocusManager();
@@ -97,8 +106,10 @@ public class ScreenMelter extends Frame{
     public void action(){
         super.action();
         try{
+            int min = 1;
+            int max = 5;
             int randomColumn = Random.randomNumber(0,allColumns.size()-1);
-            int randomNumber = Random.randomNumber(1,5);
+            int randomNumber = Random.randomNumber(min, max);
             allColumns.get(randomColumn).getPoint().y+=randomNumber;
             repaint();
         }catch(Exception e){
@@ -107,11 +118,14 @@ public class ScreenMelter extends Frame{
     }
     
     public void start(int hoursTillStart, int minutesTillStart, int secondsTillStart){
-        if(!isStarted()){
+        if(!hasStarted()){
             setStarted(true);
-            hours = hoursTillStart;
-            minutes = minutesTillStart;
-            seconds = secondsTillStart;
+            initHours = hoursTillStart;
+            initMinutes = minutesTillStart;
+            initSeconds = secondsTillStart;
+            hours = initHours;
+            minutes = initMinutes;
+            seconds = initSeconds;
             startTimer = new Timer(1000, new ActionListener(){
 
                 @Override
@@ -131,7 +145,7 @@ public class ScreenMelter extends Frame{
             seconds = 60;
         }
         if(minutes <= 0 && hours > 0){
-            minutes = 60 ;
+            minutes = 60;
             hours --;
         }
         if(seconds == 0 && minutes == 0 && hours == 0){
@@ -144,10 +158,8 @@ public class ScreenMelter extends Frame{
     @Override
     public void start(){
         if(screen == null){
-            Dimension dimensions = Toolkit.getDefaultToolkit().getScreenSize();
-            try {
-                screen = new Robot().createScreenCapture(new Rectangle(0,0,dimensions.width,dimensions.height));
-            } catch (AWTException ex) {}
+            Dimension dimensions = SystemUtil.SCREEN_SIZE;
+            screen = SystemUtil.takeScreenShot(new Rectangle(0,0,dimensions.width,dimensions.height));
             for(int i=0;i<dimensions.width;i+=pixelSize){
                 int pixelSizeToUse = pixelSize;
                 if(i+pixelSize > dimensions.width){
@@ -157,7 +169,7 @@ public class ScreenMelter extends Frame{
             }
         }
         super.start();
-        setTimerSpeed(1);
+        setTimerSpeed(speed);
     }
     
     @Override
@@ -166,16 +178,29 @@ public class ScreenMelter extends Frame{
         super.stop();
     }
     
-    public void reset(){
-//        if(is){
-//            
-//        }
+    public void resetTime(){
+        hours = initHours;
+        minutes = initMinutes;
+        seconds = initSeconds;
     }
     
-    public void restart(){
+    public void reset(){
+        if(hasStarted()){
+            screen = null;
+            allColumns.clear();
+        }
+    }
+    
+    public void restart(boolean resetTime){
         stop();
         reset();
-        start();
+        if(resetTime){
+            resetTime();
+            startTimer.start();
+        }
+        else{
+            start();
+        }
     }
     
     private class ScreenMelterPanel extends JPanel{

@@ -22,7 +22,7 @@
  */
 package alanutilites.util.popup_window;
 
-import alanutilites.shape.Point;
+import java.awt.Point;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -35,7 +35,7 @@ import java.awt.Toolkit;
 import java.io.Serializable;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 /**
@@ -45,15 +45,13 @@ import javax.swing.JPanel;
  * @version 1.0
  */
 public abstract class PopupWindow implements Serializable{
-    private static final long serialVerisonUID = 1337570192837468l;
-    
-    private Container parentFrame;
+    private static final long serialVersionUID = 1337570192837468l;
     
     private int x;
     private int y;
     private int width;
     private int height;
-    private JDialog frame;
+    private JFrame frame;
     private final JPanel panel;
     
     private Color backgroundColor;
@@ -71,7 +69,8 @@ public abstract class PopupWindow implements Serializable{
         this.height = height;
         this.backgroundColor = Color.WHITE;
         this.borderColor = Color.BLACK;
-        frame = new JDialog();
+        frame = new JFrame();        
+        frame.setType(JFrame.Type.UTILITY);
         panel = new JPanel(){
             @Override
             public void paintComponent(Graphics g){
@@ -90,21 +89,11 @@ public abstract class PopupWindow implements Serializable{
         frame.add(panel);
     }
     
-    public void update(Container window, Point mouseXY, boolean show){
+    public void update(Point mouseXY, boolean show){
         int xx = 0;
         int yy = 0;
         
 //        System.out.println("Duh Window "+window);
-        if(window != null){
-            if(window != parentFrame){
-                parentFrame = window;
-                frame = new JDialog(frame,true);
-                frame.setAlwaysOnTop(true);
-                frame.setUndecorated(true);
-                frame.setBounds(x,y,width,height);
-                frame.add(panel);
-            }
-        }
         if(mouseXY != null){
             xx = (int) mouseXY.x;
             yy = (int) mouseXY.y;
@@ -117,7 +106,7 @@ public abstract class PopupWindow implements Serializable{
             if(getX()+getWidth() >= Toolkit.getDefaultToolkit().getScreenSize().width){
                 setX(getX()-(getWidth()+(offsetX*2)));
             }
-            frame.setBounds(getX()+offsetX,getY()+offsetY,getWidth(),getHeight());
+            frame.setBounds(getX()+offsetX, getY()+offsetY, getWidth(), getHeight());
             frame.setVisible(true);
         }
         else{
@@ -125,27 +114,14 @@ public abstract class PopupWindow implements Serializable{
         }
     }
     
-    private static Frame getFrame(Component c) {
-        Component w = c;
-
-        while(!(w instanceof Frame) && (w!=null)) {
-            w = w.getParent();
-        }
-        return (Frame)w;
-    }
-    
-    public void setLayout(LayoutManager layout){
-        panel.setLayout(layout);
-        panel.repaint();
-    }
-    
-    public void addComponents(JComponent component){
-        panel.add(component);
-        panel.repaint();
-    }
-    
     public abstract void paintMethod(Graphics2D gd);
 
+    
+    private void updateColors(){        
+        panel.setBackground(backgroundColor);
+        panel.setBorder(BorderFactory.createLineBorder(borderColor));
+    }
+    
     public Color getBackgroundColor() {
         return backgroundColor;
     }
@@ -162,11 +138,6 @@ public abstract class PopupWindow implements Serializable{
     public void setBorderColor(Color borderColor) {
         this.borderColor = borderColor;
         updateColors();
-    }
-    
-    private void updateColors(){        
-        panel.setBackground(backgroundColor);
-        panel.setBorder(BorderFactory.createLineBorder(borderColor));
     }
     
     public int getX() {
@@ -201,11 +172,11 @@ public abstract class PopupWindow implements Serializable{
         this.height = height;
     }
 
-    public JDialog getFrame() {
+    public JFrame getFrame() {
         return frame;
     }
 
-    public void setFrame(JDialog frame) {
+    public void setFrame(JFrame frame) {
         this.frame = frame;
     }
 
@@ -228,11 +199,4 @@ public abstract class PopupWindow implements Serializable{
     public void setOffsetY(int offsetY) {
         this.offsetY = offsetY;
     }
-
-    public Container getParentFrame() {
-        return parentFrame;
-    }
-    
-    
-    
 }

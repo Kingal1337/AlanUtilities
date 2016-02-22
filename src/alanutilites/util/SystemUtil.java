@@ -40,7 +40,7 @@ import java.util.logging.Logger;
  * @since 1.0
  * @version 1.0
  */
-public class SystemUtil {        
+public class SystemUtil {
     /**
      * The OS of your computer
      */
@@ -74,7 +74,7 @@ public class SystemUtil {
     /**
      * The size of your computer screen;
      */
-    public static final Dimension SCREEN_SIDE = Toolkit.getDefaultToolkit().getScreenSize();
+    public static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
     
     
     /**
@@ -133,7 +133,7 @@ public class SystemUtil {
      * @return  returns the entire screen as a BufferedImage
      */
     public static BufferedImage takeScreenShot(){
-        return takeScreenShot(new Rectangle(0,0,SCREEN_SIDE.width,SCREEN_SIDE.height));
+        return takeScreenShot(new Rectangle(0,0,SCREEN_SIZE.width,SCREEN_SIZE.height));
     }
     
     /**

@@ -22,10 +22,10 @@
  */
 package alanutilites.util.image;
 
-import alanutilites.shape.Point;
 import alanutilites.shape.Shape;
 import alanutilites.util.Text;
 import alanutilites.util.popup_window.ButtonWindow;
+import java.awt.Point;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -347,8 +347,7 @@ public class PhotoAlbumViewer extends JFrame {
             rightSingleClickMenu = new ButtonWindow(gothic_font2, new String[]{" Open                          ", " Remove                          "}, 15) {
                 @Override
                 public void selector(int i) {
-                    JComponent nullCom = null;
-                    update(nullCom, null, false);
+                    update(null, false);
                     if (i == 0) {
                         photoViewer = new PhotoViewer(info.getPhotos().get(hoveringIndex));
                     } else if (i == 1) {
@@ -360,8 +359,7 @@ public class PhotoAlbumViewer extends JFrame {
             multiSingleClickMenu = new ButtonWindow(gothic_font2, new String[]{" Remove                          "}, 15) {
                 @Override
                 public void selector(int i) {
-                    JComponent nullCom = null;
-                    update(nullCom, null, false);
+                    update(null, false);
                     if (i == 0) {
                         info.remove(rightClickSelectedIndexes);
                     }
@@ -427,7 +425,7 @@ public class PhotoAlbumViewer extends JFrame {
                         rightSingleClickMenu.setBorderColor(Color.BLACK);
                         rightSingleClickMenu.setOffsetX(-10);
                         rightSingleClickMenu.setOffsetY(-5);
-                        rightSingleClickMenu.update(getFrame(), new Point(e.getLocationOnScreen().x, e.getLocationOnScreen().y), true);
+                        rightSingleClickMenu.update(new Point(e.getLocationOnScreen().x, e.getLocationOnScreen().y), true);
                     } else {
                         for (int i = 0; i < selectedIndexes.size(); i++) {
                             rightClickSelectedIndexes.add(selectedIndexes.get(i));
@@ -437,7 +435,7 @@ public class PhotoAlbumViewer extends JFrame {
                         multiSingleClickMenu.setBorderColor(Color.BLACK);
                         multiSingleClickMenu.setOffsetX(-10);
                         multiSingleClickMenu.setOffsetY(-5);
-                        multiSingleClickMenu.update(getFrame(), new Point(e.getLocationOnScreen().x, e.getLocationOnScreen().y), true);
+                        multiSingleClickMenu.update(new Point(e.getLocationOnScreen().x, e.getLocationOnScreen().y), true);
                     }
                 }
             }

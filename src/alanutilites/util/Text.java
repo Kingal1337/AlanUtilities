@@ -33,21 +33,78 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import javax.swing.JLabel;
 
 /**
  * 
  * @author Alan Tsui
  * @since 1.0
- * @version 1.0
+ * @version 1.1
  */
-public class Text {
-    
-    
+public class Text {    
     /**
      * Do not let anyone instantiate this class.
      */
     private Text(){}
     
+    /**
+     * Shortens string and adds a ... to the end of the string
+     * @param string  the string that needs to be shortened
+     * @param width  the width of your space in pixels
+     * @param font  the font you are using
+     * @return  returns a shortened string with a ... at the end. if the 
+     * string width is less than width than it will return the original string
+     */
+    public static String ellipsisText(String string, int width, Font font){
+        if(string.isEmpty() || getLengthOfString(string, font) < width){
+            return string;
+        }
+        if(width < getLengthOfString(string.charAt(0)+"...", font)){
+            if(width < getLengthOfString("...", font)){
+                return "";
+            }
+            return "...";
+        }
+        String currentString = string;
+        outerloop:
+        while(true){
+            String temp = currentString.substring(0, (currentString.length()/2));
+            if(getLengthOfString(temp, font) > width){
+                currentString = temp;
+            }
+            else{
+                String temp2 = temp;
+                int i = currentString.length()/2;
+                while(true){
+                    String temp3 = temp2;
+                    if(getLengthOfString(temp3+"...",font) > width){
+                        while(true){
+                            temp3 = temp3.substring(0,temp3.length()-1);
+                            if(getLengthOfString(temp3+"...",font) < width){
+                                break;
+                            }
+                        }
+                    }
+                    temp2 = temp2+currentString.charAt(i);
+                    if(getLengthOfString(temp2+"...",font) > width){
+                        currentString = temp3+"...";
+                        break outerloop;
+                    }
+                    i++;
+                }
+            }
+        }
+        return currentString;
+    }
+    
+    /**
+     * Splits strings without cutting into the middle of a word splits at 
+     * the next space
+     * @param originalString  the long long message
+     * @param width  the space the message needs to fit into
+     * @param gd  the Graphics2D
+     * @return  returns a array of strings that fits the width
+     */
     public static String[] prettyStringWrap(String originalString, int width, Graphics2D gd){
         Font font = gd.getFont();
         ArrayList<String> strings = new ArrayList<>();
@@ -85,7 +142,7 @@ public class Text {
     }
     
     /**
-     * 
+     * Warps a string around a certain width, Will split in the middle of a word
      * @param originalString  the string that is going to be used
      * @param width  the width of the text area
      * @param gd  the Graphics2D
@@ -125,6 +182,12 @@ public class Text {
         return strings.toArray(new String[strings.size()]);
     }
     
+    /**
+     * Gets the height of all the strings in the array and adds them together
+     * @param strings  the strings
+     * @param font  the font you are using
+     * @return  the sum of all the strings height
+     */
     public static int getHeightOfStrings(String[] strings, Font font){
         BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         Graphics g = img.getGraphics();
@@ -138,9 +201,17 @@ public class Text {
         return height;
     }
     
-    public static Rectangle getStringBounds(Graphics2D g2, String str, float x, float y){
-        FontRenderContext frc = g2.getFontRenderContext();
-        GlyphVector gv = g2.getFont().createGlyphVector(frc, str);
+    /**
+     * Gets the bounds of the string 
+     * @param gd  the Graphics2D
+     * @param string  the string
+     * @param x  the x where you want to put the string
+     * @param y  the y where you want to put the string
+     * @return  returns the bounds of the string
+     */
+    public static Rectangle getStringBounds(Graphics2D gd, String string, float x, float y){
+        FontRenderContext frc = gd.getFontRenderContext();
+        GlyphVector gv = gd.getFont().createGlyphVector(frc, string);
         return gv.getPixelBounds(null, x, y);
     }
     
@@ -155,6 +226,27 @@ public class Text {
         FontMetrics fm = img.getGraphics().getFontMetrics(font);
         int width = fm.stringWidth(string);
         return width;
+    }
+    
+    /**
+     * Splits a string at an interval
+     * @param string  the string that needs to be cut
+     * @param interval  the interval 
+     * @return 
+     */
+    public static String[] splitString(String string, int interval){
+        int arrayLength = (int) Math.ceil(((string.length() / (double)interval)));
+        String[] result = new String[arrayLength];
+
+        int j = 0;
+        int lastIndex = result.length - 1;
+        for (int i = 0; i < lastIndex; i++) {
+            result[i] = string.substring(j, j + interval);
+            j += interval;
+        } //Add the last bit
+        result[lastIndex] = string.substring(j);
+
+        return result;
     }
     
     /**
@@ -173,7 +265,7 @@ public class Text {
      * Gets the largest string in the string array in pixels
      * @param strings  all the strings that need to be compared
      * @param font  the font all the strings are using
-     * @return  returns the largest strings length;
+     * @return  returns the largest strings length in pixels
      */
     public static int getLargestNumber(String[] strings, Font font) {
         if(strings.length == 0){
@@ -192,6 +284,27 @@ public class Text {
             }
         }
         return largeNumber;
+    }
+    
+    /**
+     * Get the largest string in the array
+     * @param strings  the strings
+     * @return  returns the last largest string in the array
+     */
+    public static String getLargestString(String[] strings){
+        if(strings.length == 0){
+            return null;
+        }
+        if(strings.length == 1){
+            return strings[0];
+        }
+        String largest = strings[0];
+        for(int i=1;i<strings.length;i++){
+            if(largest.length() <= strings[i].length()){
+                largest = strings[i];
+            }
+        }
+        return largest;
     }
     
     
@@ -235,9 +348,18 @@ public class Text {
         int xx = ((width - fm.stringWidth(string)) / 2) + x;
         int yy = (fm.getAscent() + (height - (fm.getAscent() + fm.getDescent())) / 2) + y;
         return new Point(xx,yy);
-    } 
+    }
     
-    public static void outlineText(String string, Color outlineColor, Color stringColor, Graphics2D gd, Point point, int outLineSize){
+    /**
+     * Outlines text
+     * @param string  the string
+     * @param stringColor  the string color
+     * @param outlineColor  the outline color
+     * @param point  the point where the string needs to be drawn
+     * @param outLineSize  the size of the outline (should not exceed 5 or the outline will look weird)
+     * @param gd  the Graphics2D
+     */
+    public static void outlineText(String string, Color stringColor, Color outlineColor, Point point, int outLineSize, Graphics2D gd){
         gd.setColor(outlineColor);
         gd.drawString(string, shiftWest(point.x, outLineSize), shiftNorth(point.y, outLineSize));
         gd.drawString(string, shiftWest(point.x, outLineSize), shiftSouth(point.y, outLineSize));
@@ -247,55 +369,64 @@ public class Text {
         gd.drawString(string, point.x, point.y);
     }
     
-    public static void shadowText(String string, Graphics2D gd, Color textColor, Color shadowColor, Point point, int shadowWidth){
+    /**
+     * Creates a shadow of the text
+     * @param string  the string
+     * @param stringColor  the color of the string
+     * @param shadowColor  the color of the shadow
+     * @param point  the point where the string needs to be drawn
+     * @param shadowDistance  the distance from the main text
+     * @param gd  the Graphics2D
+     */
+    public static void shadowText(String string, Color stringColor, Color shadowColor, Point point, int shadowDistance, Graphics2D gd){
         gd.setColor(shadowColor);
-        gd.drawString(string, shiftEast(point.x, shadowWidth), shiftSouth(point.y, shadowWidth));
-        gd.setColor(textColor);
+        gd.drawString(string, shiftEast(point.x, shadowDistance), shiftSouth(point.y, shadowDistance));
+        gd.setColor(stringColor);
         gd.drawString(string, point.x, point.y);
     }
     
     //<editor-fold defaultstate="collapsed" desc="3D Text">
-    public static void draw3DToBottomLeft(String string, Color sideColor, Color topColor, Graphics2D gd, Point point, int amountToPopOut){
+    public static void draw3DToBottomLeft(String string, Color mainColor, Color highlight, Point point, int amountToPopOut, Graphics2D gd){
         for (int i = 0; i < amountToPopOut; i++) {
-           gd.setColor(topColor);
+           gd.setColor(mainColor);
            gd.drawString(string, shiftWest(point.x, i), shiftNorth(shiftSouth(point.y, i), 1));
-           gd.setColor(sideColor);
+           gd.setColor(highlight);
            gd.drawString(string, shiftEast(shiftWest(point.x, i), 1), shiftSouth(point.y, i));
-           }
-        gd.setColor(topColor);
+        }
+        gd.setColor(mainColor);
         gd.drawString(string, shiftWest(point.x, amountToPopOut), shiftSouth(point.y, amountToPopOut));
     }
 
-    public static void draw3DToTopRight(String string, Color sideColor, Color topColor, Graphics2D gd, Point point, int amountToPopOut){
+    public static void draw3DToTopRight(String string, Color mainColor, Color highlight, Point point, int amountToPopOut, Graphics2D gd){
         for (int i = 0; i < amountToPopOut; i++) {
-           gd.setColor(topColor);
+           gd.setColor(mainColor);
            gd.drawString(string, shiftEast(point.x, i), shiftSouth(shiftNorth(point.y, i), 1));
-           gd.setColor(sideColor);
+           gd.setColor(highlight);
            gd.drawString(string, shiftWest(shiftEast(point.x, i), 1), shiftNorth(point.y, i));
-           }
-        gd.setColor(topColor);
+        }
+        gd.setColor(mainColor);
         gd.drawString(string, shiftEast(point.x, amountToPopOut), shiftNorth(point.y, amountToPopOut));
     }
 
-    public static void draw3DToTopLeft(String string, Color sideColor, Color topColor, Graphics2D gd, Point point, int amountToPopOut){
+    public static void draw3DToTopLeft(String string, Color mainColor, Color highlight, Point point, int amountToPopOut, Graphics2D gd){
         for (int i = 0; i < amountToPopOut; i++) {
-           gd.setColor(topColor);
+           gd.setColor(mainColor);
            gd.drawString(string, shiftWest(point.x, i), shiftSouth(shiftNorth(point.y, i), 1));
-           gd.setColor(sideColor);
+           gd.setColor(highlight);
            gd.drawString(string, shiftEast(shiftWest(point.x, i), 1), shiftNorth(point.y, i));
-           }
-        gd.setColor(topColor);
+        }
+        gd.setColor(mainColor);
         gd.drawString(string, shiftWest(point.x, amountToPopOut), shiftNorth(point.y, amountToPopOut));
     }
 
-    public static void draw3DToBottomRight(String string, Color sideColor, Color topColor, Graphics2D gd, Point point, int amountToPopOut){
+    public static void draw3DToBottomRight(String string, Color mainColor, Color highlight, Point point, int amountToPopOut, Graphics2D gd){
         for (int i = 0; i < amountToPopOut; i++) {
-           gd.setColor(topColor);
+           gd.setColor(mainColor);
            gd.drawString(string, shiftEast(point.x, i), shiftNorth(shiftSouth(point.y, i), 1));
-           gd.setColor(sideColor);
+           gd.setColor(highlight);
            gd.drawString(string, shiftWest(shiftEast(point.x, i), 1), shiftSouth(point.y, i));
-           }
-        gd.setColor(topColor);
+        }
+        gd.setColor(mainColor);
         gd.drawString(string, shiftEast(point.x, amountToPopOut), shiftSouth(point.y, amountToPopOut));
     }
     //</editor-fold>
@@ -314,20 +445,5 @@ public class Text {
 
     private static int shiftWest(int p, int distance) {
         return (p - distance);
-    }
-    
-    public static String[] splitString(String string, int interval){
-        int arrayLength = (int) Math.ceil(((string.length() / (double)interval)));
-        String[] result = new String[arrayLength];
-
-        int j = 0;
-        int lastIndex = result.length - 1;
-        for (int i = 0; i < lastIndex; i++) {
-            result[i] = string.substring(j, j + interval);
-            j += interval;
-        } //Add the last bit
-        result[lastIndex] = string.substring(j);
-
-        return result;
     }
 }

@@ -22,10 +22,12 @@
  */
 package alanutilites.util.popup_window;
 
+import alanutilites.util.SystemUtil;
 import alanutilites.util.Text;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.io.Serializable;
 
@@ -53,32 +55,28 @@ public class ToolTip extends PopupWindow implements Serializable{
         this.message = message;
         this.lineGap = lineGap;
         foregroundColor = Color.BLACK;
-        if(font != null){
-            this.font = font;
-        }
-        else{
-            this.font = DEFAULT_FONT;
-        }
+        this.font = font != null ? font : DEFAULT_FONT;
         messages = this.message.split("\n");
         length = Text.getLargestNumber(messages, this.font);
-        setWidth(length);
+        setWidth(length+6);
         singleLineHeight = Text.getHeightOfString(this.font);
-        setHeight(Text.getHeightOfString(this.font)*messages.length);  
+        setHeight((Text.getHeightOfString(this.font)*messages.length)+6);  
     }
-    
     
     @Override
     public void paintMethod(Graphics2D gd){
-        if(getX()+getWidth()+20 >= Toolkit.getDefaultToolkit().getScreenSize().width){
+        if(getX()+getWidth()+20 >= SystemUtil.SCREEN_SIZE.width){
             setX(getX()-getWidth());
         }
         int tempX = 0;
         int tempY = 0;
+        gd.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, 
+        RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         gd.setColor(foregroundColor);
         tempY+=singleLineHeight/2+2;
         gd.setFont(font);
         for(int i=0;i<messages.length;i++){
-            gd.drawString(messages[i],tempX,tempY+lineGap);
+            gd.drawString(messages[i],tempX+3,tempY+lineGap+3);
             tempY+=singleLineHeight;
         }  
     }
@@ -87,7 +85,7 @@ public class ToolTip extends PopupWindow implements Serializable{
         return message;
     }
 
-    public void setMessages(String message) {
+    public void setMessage(String message) {
         this.message = message;
         messages = this.message.split("\n");
         updateFont();
@@ -112,9 +110,9 @@ public class ToolTip extends PopupWindow implements Serializable{
     
     public void updateFont(){
         length = Text.getLargestNumber(messages, font);
-        setWidth(length);
+        setWidth(length+6);
         singleLineHeight = Text.getHeightOfString(font);
-        setHeight(Text.getHeightOfString(font)*messages.length);
+        setHeight((Text.getHeightOfString(this.font)*messages.length)+6);
     }
     
     

@@ -28,7 +28,7 @@ import java.awt.geom.Rectangle2D;
  * 
  * @author Alan Tsui
  * @since 1.0
- * @version 1.0
+ * @version 1.1
  */
 public class Line {
     private Point point1;
@@ -146,15 +146,23 @@ public class Line {
     }
     
     /**
+     * Translates the line by <code>deltaX</code> and <code>deltaY</code>
+     * @param deltaX  the amount to translate along the x-axis
+     * @param deltaY  the amount to translate along the y-axis
+     */
+    public void translate(double deltaX, double deltaY){
+        point1.translate(deltaX, deltaY);
+        point2.translate(deltaX, deltaY);
+    }
+    
+    /**
      * Rotates a the line a certain amount of degrees
      * @param origin  the center of rotation
      * @param degrees  the degrees(0 - 360) to rotate
-     * @return  returns the rotated line
      */
-    public Line rotate(Point origin, double degrees){
-        return new Line(
-                Shape.rotatePoint(origin, point1, degrees),
-                Shape.rotatePoint(origin, point2, degrees));
+    public void rotate(Point origin, double degrees){
+        point1.rotate(origin, degrees);
+        point2.rotate(origin, degrees);
     }
     
     

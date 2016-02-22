@@ -71,7 +71,7 @@ public class Frame extends JFrame implements ActionListener{
     public void start(){
         started = true;
         if(allowAltTab){
-            stopper.start();
+//            stopper.start();
         }
         setVisible(true);
         if(SystemUtil.isMac()){
@@ -139,7 +139,7 @@ public class Frame extends JFrame implements ActionListener{
         this.debugMessages = debugMessages;
     }
 
-    public boolean isStarted() {
+    public boolean hasStarted() {
         return started;
     }
 

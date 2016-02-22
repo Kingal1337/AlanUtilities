@@ -22,8 +22,8 @@
  */
 package alanutilites.util.popup_window;
 
-import alanutilites.shape.Point;
 import alanutilites.util.Text;
+import java.awt.Point;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Font;
@@ -46,6 +46,7 @@ import javax.swing.Timer;
  * @version 1.0
  */
 public abstract class ButtonWindow extends PopupWindow implements ActionListener,MouseMotionListener,MouseListener{
+    private static final long serialVersionUID = 133757053875638l;
     private String[] buttonNames;
     private Color foregroundColor;
     private Color hoverColor;
@@ -56,7 +57,6 @@ public abstract class ButtonWindow extends PopupWindow implements ActionListener
     private int selectedIndex;
     
     private Timer timer;
-    private java.awt.Point point;
     
     private int mouseY;
     public ButtonWindow(Font font, String[] buttonNames,int lineGap) {
@@ -83,20 +83,20 @@ public abstract class ButtonWindow extends PopupWindow implements ActionListener
         java.awt.Point point = pointerInfo.getLocation();
         convertPointFromScreen(point, getPanel());
         if(point.x < 0 || point.y < 0 || point.x > getPanel().getWidth() || point.y > getPanel().getHeight()){
-            update(getParentFrame(),null,false);
+            update(null,false);
         }
         getPanel().repaint();
     }
     
     @Override
-    public void update(Container window, Point mouseXY, boolean show){
+    public void update(Point mouseXY, boolean show){
         if(show){
             timer.start();
         }
         else{
             timer.stop();
         }
-        super.update(window, mouseXY,show);
+        super.update(mouseXY,show);
     }
     
     @Override
@@ -124,7 +124,7 @@ public abstract class ButtonWindow extends PopupWindow implements ActionListener
     @Override
     public void mouseMoved(MouseEvent e) {
         PointerInfo pointerInfo = MouseInfo.getPointerInfo();
-        java.awt.Point point = pointerInfo.getLocation();
+        Point point = pointerInfo.getLocation();
         convertPointFromScreen(point, getPanel());
 //        System.out.println(getPanel());
         mouseY = (int) point.getY();
@@ -137,14 +137,13 @@ public abstract class ButtonWindow extends PopupWindow implements ActionListener
     @Override
     public void mouseClicked(MouseEvent e) {
         PointerInfo pointerInfo = MouseInfo.getPointerInfo();
-        java.awt.Point point = pointerInfo.getLocation();
+        Point point = pointerInfo.getLocation();
         convertPointFromScreen(point, getPanel());
         mouseY = (int) point.y;
         
         selectedIndex = mouseY/(stringHeight+lineGap);
         selector(selectedIndex);
-        JComponent nullCom = null;
-        update(nullCom,null,false);
+        update(null,false);
         timer.stop();
         
     }
@@ -163,14 +162,14 @@ public abstract class ButtonWindow extends PopupWindow implements ActionListener
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        update(getParentFrame() ,new Point(getX(),getY()),true);
+        update(new Point(getX(),getY()),true);
         timer.start();
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
         System.out.println("Testy");
-        update(getParentFrame(),null,false);
+        update(null,false);
         timer.stop();
     }
 

@@ -26,7 +26,7 @@ package alanutilites.shape;
  * 
  * @author Alan Tsui
  * @since 1.0
- * @version 1.0
+ * @version 1.1
  */
 public class Point {
     public double x;
@@ -46,8 +46,15 @@ public class Point {
         y = point.y;
     }
     
-    public Point rotate(Point origin,  double degrees){
-        return Shape.rotatePoint(origin, this, degrees);
+    public void translate(double deltaX, double deltaY){
+        x += deltaX;
+        y += deltaY;
+    }
+    
+    public void rotate(Point origin,  double degrees){
+        Point point = Shape.rotatePoint(origin, this, degrees);
+        x = point.x;
+        y = point.y;
     }
     
     public void setLocation(Point point) {
