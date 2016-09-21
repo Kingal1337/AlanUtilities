@@ -32,12 +32,23 @@ import java.util.Calendar;
  * @version 1.0
  */
 public class Time {
+    public static void main(String[] args){
+        Time time = new Time();
+        System.out.println(time);
+    }
     private Calendar calendar;
     private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEE MMM dd kk:mm:ss zzz yyyy");
     private final SimpleDateFormat TIME_STAMP = new SimpleDateFormat("yyyyMMddkkmmss");
     
     /**
-     * Creates a calendar with an initial date
+     * Creates a time object with the current date and time
+     */
+    public Time(){
+        calendar = Calendar.getInstance();
+    }
+    
+    /**
+     * Creates a time object with an initial date and time
      * @param year  a year
      * @param month  a month from 1-12
      * @param day  a day 
@@ -102,7 +113,7 @@ public class Time {
     }
     
     /**
-     * Compares a time to another time by minute not be seconds
+     * Compares a time to another time by minute not by seconds
      * @param time  the other time you want compare
      * @return  if the 2 times are equals returns true else returns false
      */
@@ -254,7 +265,7 @@ public class Time {
     /**
      * turns a month number to a String month
      * @param month  the month (1-12)
-     * @return  returns a nice month
+     * @return  returns a nice month if number is not between 1-12 returns null
      * EX:
      * 1 = January
      * 2 = February
@@ -262,7 +273,7 @@ public class Time {
      * etc.
      */
     public static String getNicerMonth(int month){
-        String newMonth = "Error";
+        String newMonth = null;
         switch (month) {
             case 1:
                 newMonth = "January";

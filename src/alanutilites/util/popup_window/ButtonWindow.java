@@ -22,7 +22,7 @@
  */
 package alanutilites.util.popup_window;
 
-import alanutilites.util.Text;
+import alanutilites.util.text.Text;
 import java.awt.Point;
 import java.awt.Color;
 import java.awt.Font;
@@ -34,6 +34,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 import static javax.swing.SwingUtilities.convertPointFromScreen;
 import javax.swing.Timer;
 
@@ -43,9 +44,11 @@ import javax.swing.Timer;
  * @since 1.0
  * @version 1.0
  */
-public abstract class ButtonWindow extends PopupWindow implements ActionListener,MouseMotionListener,MouseListener{
+public class ButtonWindow extends PopupWindow implements ActionListener,MouseMotionListener,MouseListener{
     private static final long serialVersionUID = 133757053875638l;
-    private String[] buttonNames;
+    private ArrayList<Action> actions;
+    private ArrayList<String> actionNames;
+    
     private Color foregroundColor;
     private Color hoverColor;
     private Font font;
@@ -57,20 +60,30 @@ public abstract class ButtonWindow extends PopupWindow implements ActionListener
     private Timer timer;
     
     private int mouseY;
-    public ButtonWindow(Font font, String[] buttonNames,int lineGap) {
+    public ButtonWindow(Font font, ArrayList<Action> actions, int lineGap){
         super(0,0,0,0);
         this.font = font;
-        this.buttonNames = buttonNames;
+        this.actions = actions;
         this.lineGap = lineGap;
+        actionNames = new ArrayList<>();
         
         timer = new Timer(20, this);
+        
         selectedIndex = -1;
+        
         hoverColor = Color.LIGHT_GRAY;
         foregroundColor = Color.BLACK;
-        stringHeight = Text.getHeightOfString(font);
-        length = Text.getLargestNumber(buttonNames, font);
+        
+        for(Action action : actions){
+            actionNames.add(action.getActionTitle());
+        }
+        
+        stringHeight = Text.getHeightOfString(font);        
+        length = Text.getLargestNumber(actionNames.toArray(new String[actionNames.size()]), font);
+        
         setWidth(length);
-        setHeight((stringHeight+lineGap)*buttonNames.length);
+        setHeight((stringHeight+lineGap)*actions.size());
+        
         getPanel().addMouseListener(this);
         getPanel().addMouseMotionListener(this);
     }
@@ -94,7 +107,7 @@ public abstract class ButtonWindow extends PopupWindow implements ActionListener
         else{
             timer.stop();
         }
-        super.update(mouseXY,show);
+        super.update(mouseXY, show);
     }
     
     @Override
@@ -103,13 +116,13 @@ public abstract class ButtonWindow extends PopupWindow implements ActionListener
         int x = 0;
         int y = 0;
         gd.setFont(font);
-        for(int i=0;i<buttonNames.length;i++){
+        for(int i=0;i<actions.size();i++){
             if(selectedIndex == i){
                 gd.setColor(hoverColor);
                 gd.fillRect(x, y, length, stringHeight+lineGap);
             }
             gd.setColor(foregroundColor);
-            gd.drawString(buttonNames[i],x,(y+stringHeight)+(lineGap/2));
+            gd.drawString(actions.get(i).getActionTitle(),x,(y+stringHeight)+(lineGap/2));
             y+=increment;            
         }
     }
@@ -124,9 +137,7 @@ public abstract class ButtonWindow extends PopupWindow implements ActionListener
         PointerInfo pointerInfo = MouseInfo.getPointerInfo();
         Point point = pointerInfo.getLocation();
         convertPointFromScreen(point, getPanel());
-//        System.out.println(getPanel());
         mouseY = (int) point.getY();
-//        System.out.println(point);
         
         selectedIndex = mouseY/(stringHeight+lineGap);
         getPanel().repaint();
@@ -140,7 +151,7 @@ public abstract class ButtonWindow extends PopupWindow implements ActionListener
         mouseY = (int) point.y;
         
         selectedIndex = mouseY/(stringHeight+lineGap);
-        selector(selectedIndex);
+        actions.get(selectedIndex).action(new ActionEvent(mouseY, length, null));
         update(null,false);
         timer.stop();
         
@@ -166,9 +177,12 @@ public abstract class ButtonWindow extends PopupWindow implements ActionListener
 
     @Override
     public void mouseExited(MouseEvent e) {
-        System.out.println("Testy");
         update(null,false);
         timer.stop();
+    }
+    
+    public void setButtonNames(String[] buttonNames){
+        
     }
 
     public Color getForegroundColor() {
@@ -186,9 +200,4 @@ public abstract class ButtonWindow extends PopupWindow implements ActionListener
     public void setHoverColor(Color hoverColor){
         this.hoverColor = hoverColor;
     }
-    
-    public abstract void selector(int selectedIndex);
-    
-    
-    
 }

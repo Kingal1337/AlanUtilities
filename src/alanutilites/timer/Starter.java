@@ -20,11 +20,11 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  */
-package alanutilites.virus;
+package alanutilites.timer;
 
-import alanutilites.timer.ActionListener;
-import alanutilites.timer.Timer;
 import alanutilites.util.time.Time;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * 
@@ -58,7 +58,7 @@ public abstract class Starter implements ActionListener{
     }
     
     @Override
-    public void actionPerformed(){
+    public void actionPerformed(ActionEvent e){
         if(useExact ? currentTime.exactCompare(timeToStart) : currentTime.estimateCompare(timeToStart)){
             action();
             stop();

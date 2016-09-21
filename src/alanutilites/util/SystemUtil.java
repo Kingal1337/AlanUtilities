@@ -62,7 +62,7 @@ public class SystemUtil {
     public static final String USER_NAME = System.getProperty("user.name");
     
     /**
-     * The local ip of this computer
+     * The local IP of this computer
      */
     public static final String LOCAL_IP = getLocalIP();
     
@@ -270,7 +270,7 @@ public class SystemUtil {
     public static String[] allUser() throws IOException {
         if(isWindows()){
             Process process = runCommand("net user");
-            String[] allData = FileManager.readInputStream(process.getInputStream());
+            String[] allData = FileManager.readInputStream(process.getInputStream(), "UTF-8");
             String allUsersInString = "";
             for(int i=4;i<allData.length-2;i++){
                 allUsersInString+=allData[i]+" ";
@@ -282,7 +282,7 @@ public class SystemUtil {
     
     public static String[] getProcesses() throws IOException{
         Process process = runCommand("tasklist /svc");
-        String[] allData = FileManager.readInputStream(process.getInputStream());
+        String[] allData = FileManager.readInputStream(process.getInputStream(), "UTF-8");
         String allUsersInString = "";
         for(int i=4;i<allData.length-2;i++){
             allUsersInString+=allData[i]+" ";

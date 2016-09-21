@@ -22,6 +22,7 @@
  */
 package alanutilites.util;
 
+import alanutilites.util.text.Text;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -31,7 +32,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -182,7 +182,6 @@ public class FileManager {
         String nameThatShouldBeUsed = null;
         int counter = 0;
         if (folderPathLocation.isDirectory()) {
-            System.out.println(folderPathLocation);
             File[] allFiles = getAllFiles(folderPath, new String[]{extension});
             if(allFiles.length != 0){
                 for (File allFile1 : allFiles) {
@@ -214,7 +213,7 @@ public class FileManager {
      * @param extension  the extension being used by the file
      * @return  returns true if there is a file already named with the variable name else returns false
      */
-    public static boolean isAlreadyNamed(String filePath,String name,String extension){
+    public static boolean isAlreadyNamed(String filePath,String name,String extension) {
         File file = new File(filePath);
         if(file.isDirectory()){
             File[] allFiles = getAllFiles(filePath, new String[]{extension});
@@ -236,15 +235,18 @@ public class FileManager {
     /**
      * Reads an InputStream and returns all data
      * @param in  InputStream that needs to be read
+     * @param charset  the name of a supported {@link java.nio.charset.Charset charset}
      * @return  Returns string array with all data 
      * @throws IOException  if IOException occurs
      */
-    public static String[] readInputStream(InputStream in) throws IOException{
+    public static String[] readInputStream(InputStream in, String charset) throws IOException{
         ArrayList<String> allStrings = new ArrayList<>();
-        BufferedReader br = new BufferedReader(new InputStreamReader(in));
-        String sCurrentLine;
-        while ((sCurrentLine = br.readLine()) != null) {
-            allStrings.add(sCurrentLine);
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(in, charset))) {
+            String sCurrentLine;
+            while ((sCurrentLine = br.readLine()) != null) {
+                allStrings.add(sCurrentLine);
+            }
+            br.close();
         }
         return allStrings.toArray(new String[allStrings.size()]);
     }
@@ -252,29 +254,24 @@ public class FileManager {
     /**
      * Reads a file with text in it
      * @param filePath  the file path to the file you need to read
+     * @param charset  the name of a supported {@link java.nio.charset.Charset charset}
      * @return  if file path doesn't exist then returns with an empty array else returns an array of text
      */
-    public static String[] readFile(String filePath){
-        return readFile(new File(filePath));
+    public static String[] readFile(String filePath, String charset){
+        return readFile(new File(filePath), charset);
     }
     
     /**
      * Reads a file with text in it
      * @param file  the file
+     * @param charset  the name of a supported {@link java.nio.charset.Charset charset}
      * @return  if file path doesn't exist then returns with an empty array else returns an array of text
      */
-    public static String[] readFile(File file){
-        ArrayList<String> allStrings = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String sCurrentLine;
-            while ((sCurrentLine = br.readLine()) != null) {
-                allStrings.add(sCurrentLine);
-            }
-            br.close();
-        } catch (IOException e) {
-            allStrings = new ArrayList<>();
-        }
-        return allStrings.toArray(new String[allStrings.size()]);
+    public static String[] readFile(File file, String charset){
+        try {
+            return readInputStream(new FileInputStream(file), charset);
+        } catch (FileNotFoundException ex) {} catch (IOException ex) {}
+        return null;
     }
     
     /**
@@ -282,7 +279,7 @@ public class FileManager {
      * @param filePath  the file path you want to save it to
      * @param contents  the contents you need to put in the file (Each index is a new line)
      */
-    public static void saveFile(String filePath,String[] contents) {
+    public static void saveFile(String filePath, String[] contents) {
         saveFile(new File(filePath),contents);
     }
     
@@ -291,7 +288,7 @@ public class FileManager {
      * @param file  the file
      * @param contents  the contents you need to put in the file (Each index is a new line)
      */
-    public static void saveFile(File file,String[] contents) {
+    public static void saveFile(File file, String[] contents) {
         try {
             if (!file.exists()) {
                 file.createNewFile();
@@ -304,7 +301,7 @@ public class FileManager {
             }
             bw.close();
         } catch (IOException e) {
-            System.out.println("Bub");
+            
         }
     }
     
@@ -333,12 +330,13 @@ public class FileManager {
     /**
      * Gets a byte array
      * @param filePath  the file path where the byte array is location
+     * @param internalPath  make true if the path is an internal path
      * @return  returns a byte array
      * @throws FileNotFoundException  throws Exception if the file does not exist
      * @throws IOException  throws IOException if cannot read file
      */
-    public static byte[] toByteArray(String filePath) throws FileNotFoundException, IOException{
-        return toByteArray(new FileInputStream(filePath));
+    public static byte[] toByteArray(String filePath, boolean internalPath) throws FileNotFoundException, IOException{
+        return internalPath ? toByteArray(FileManager.class.getResourceAsStream(filePath)) : toByteArray(new FileInputStream(filePath));
     }
     
     /**
@@ -449,7 +447,7 @@ public class FileManager {
     /**
      * Gets an image from a specific path
      * @param filePath  the file path where the image is location
-     * @return  returns an ImageIcon if the file path exists and if not a direction else returns null
+     * @return  returns an ImageIcon if the file path exists and if not a directory else returns null
      */
     public static ImageIcon readImage(String filePath){
         return readImage(new File(filePath));
@@ -458,7 +456,7 @@ public class FileManager {
     /**
      * Gets an image from a specific path
      * @param file  the file
-     * @return  returns an ImageIcon if the file path exists and if not a direction else returns null
+     * @return  returns an ImageIcon if the file path exists and if not a directory else returns null
      */
     public static ImageIcon readImage(File file){
         return file.exists() ?  file.isFile() ? new ImageIcon(file.getAbsolutePath()) : null : null;

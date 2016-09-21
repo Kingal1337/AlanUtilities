@@ -22,6 +22,7 @@
  */
 package alanutilites.util;
 
+import alanutilites.util.text.Text;
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -51,6 +52,11 @@ import javax.swing.JPanel;
  * @version 1.0
  */
 public class ScreenShot extends JFrame implements Serializable{
+    public static void main(String... aergs) throws Exception{
+        ScreenShot shot = new ScreenShot("Save Path", "Title", " ");
+        Thread.sleep(2000);
+        shot.start();
+    }
     private static final long serialVersionUID = 1337570192837466l;
     
     private JPanel panel;

@@ -46,7 +46,6 @@ import javax.swing.JScrollPane;
  * @version 1.0
  */
 public class PhotoViewer extends JDialog implements KeyListener {
-
         private Photo photo;
         private ImageIcon image;
         private int zoomValue;
@@ -57,7 +56,6 @@ public class PhotoViewer extends JDialog implements KeyListener {
         private JMenuBar bar;
         private JMenu fileMenu;
         private JMenu export;
-
         public PhotoViewer(Photo photo) {
             this.photo = photo;
             this.image = this.photo.getIcon();

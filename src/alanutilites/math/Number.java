@@ -25,7 +25,7 @@ package alanutilites.math;
 /**
  * 
  * @author Alan T
- * @version 1.0
+ * @version 1.1
  * @since 1.1
  */
 public class Number {
@@ -68,10 +68,10 @@ public class Number {
     }
     
     public static boolean isEven(int number){
-        return number % 2 == 0;
+        return (number & 1) == 1;
     }
     
     public static boolean isOdd(int number){
-        return number % 2 != 0;
+        return (number & 1) == 0;
     }
 }

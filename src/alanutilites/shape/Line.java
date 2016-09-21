@@ -22,6 +22,7 @@
  */
 package alanutilites.shape;
 
+import alanutilites.util.collision.CollisionBox;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -69,8 +70,8 @@ public class Line {
      * @param line  the line to copy
      */
     public Line(Line line){
-        point1 = line.point1;
-        point2 = line.point2;
+        point1 = new Point(line.point1);
+        point2 = new Point(line.point2);
     }
     
     /**
@@ -193,6 +194,10 @@ public class Line {
      */
     public boolean intersects(Rectangle2D r) {
         return r.intersectsLine(getX1(), getY1(), getX2(), getY2());
+    }
+    
+    public boolean intersects(CollisionBox box){
+        return intersects(new Rectangle2D.Double(box.getX(), box.getY(), box.getWidth(), box.getHeight()));
     }
     
     /**
@@ -340,22 +345,32 @@ public class Line {
     }
     
     public void setLine(Line line){
-        setLine(line.getPoint1(), line.getPoint2());
+        setLine(line.getStartPoint(), line.getEndPoint());
     }
     
-    public void setPoint1(Point point1){
+    public void setStartPoint(double x, double y){
+        setX1(x);
+        setY1(y);
+    }
+    
+    public void setEndPoint(double x, double y){
+        setX2(x);
+        setY2(y);
+    }
+    
+    public void setStartPoint(Point point1){
         this.point1 = point1;
     }
     
-    public Point getPoint1(){
+    public Point getStartPoint(){
         return point1;
     }
     
-    public void setPoint2(Point point2){
+    public void setEndPoint(Point point2){
         this.point2 = point2;
     }
     
-    public Point getPoint2(){
+    public Point getEndPoint(){
         return point2;
     }
     

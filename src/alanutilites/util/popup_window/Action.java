@@ -22,23 +22,28 @@
  * THE SOFTWARE.
  */
 
-package alanutilites.shape;
+package alanutilites.util.popup_window;
 
-import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
 
 /**
  *
  * @author Alan Tsui
  */
-public interface Shape extends Transformable{
-    public double getArea();
+public abstract class Action {
+    private String actionTitle;
+    public Action(String actionTitle){
+        this.actionTitle = actionTitle;
+    }
     
-    public double getPerimeter();
-    
-    public boolean contains(double x, double y);
-    
-    public Point getCenter();
-    
-    public void render(Graphics2D gd, int x, int y, double scale);
+    public abstract void action(ActionEvent event);
+
+    public String getActionTitle() {
+        return actionTitle;
+    }
+
+    public void setActionTitle(String actionTitle) {
+        this.actionTitle = actionTitle;
+    }
     
 }

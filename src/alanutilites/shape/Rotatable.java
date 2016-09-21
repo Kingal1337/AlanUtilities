@@ -24,21 +24,14 @@
 
 package alanutilites.shape;
 
-import java.awt.Graphics2D;
-
 /**
  *
  * @author Alan Tsui
  */
-public interface Shape extends Transformable{
-    public double getArea();
+public interface Rotatable {
+    public void rotate(double theta);
     
-    public double getPerimeter();
+    public void rotate(double theta, double x, double y);
     
-    public boolean contains(double x, double y);
-    
-    public Point getCenter();
-    
-    public void render(Graphics2D gd, int x, int y, double scale);
-    
+    public void rotate(double theta, Point point);
 }

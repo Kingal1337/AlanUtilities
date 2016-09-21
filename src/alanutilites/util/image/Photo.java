@@ -134,7 +134,7 @@ public class Photo {
             if(file.isDirectory()){
                 try {
                     String fileName = file.getAbsolutePath()+SystemUtil.FILE_SEPARATOR+FileManager.getName(file.getAbsolutePath(), title, " ", "png");
-                    System.out.println(fileName);
+//                    System.out.println(fileName);
                     FileManager.saveImage(icon, new File(fileName), "png");
                     return true;
                 } catch (IOException ex) {

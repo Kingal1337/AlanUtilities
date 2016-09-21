@@ -22,7 +22,7 @@
  */
 package alanutilites.frame;
 
-import alanutilites.util.Text;
+import alanutilites.util.text.Text;
 import alanutilites.util.popup_window.ToolTip;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -159,7 +159,6 @@ public class AFrame extends JFrame{
         });
         
         titleBar = bar;
-//        titleBar.setOpaque(false);
         titleBar.setBorder(BorderFactory.createEmptyBorder(4,4,4,4));
         titleBar.addMouseListener(drag);
         titleBar.addMouseMotionListener(drag);
@@ -383,7 +382,6 @@ public class AFrame extends JFrame{
     public void setTitleBar(TitleBar titleBar) {
         titlePanel.remove(this.titleBar);
         this.titleBar = titleBar;
-//        this.titleBar.setOpaque(false);
         this.titleBar.setBorder(BorderFactory.createEmptyBorder(4,4,4,4));
         this.titleBar.addMouseListener(drag);
         this.titleBar.addMouseMotionListener(drag);
@@ -1082,7 +1080,6 @@ public class AFrame extends JFrame{
                 default:
                     throw new Error("Unknown SideLabel");
             }
-//            System.out.println("11 : "+titleBar.getWidth()+" "+side);
             repaint();
             return r;
         }

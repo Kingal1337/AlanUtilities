@@ -22,12 +22,12 @@
  */
 package alanutilites.util.image;
 
-import alanutilites.shape.Shape;
-import alanutilites.util.Text;
+import alanutilites.shape.ShapeUtil;
+import alanutilites.util.text.Text;
+import alanutilites.util.popup_window.Action;
 import alanutilites.util.popup_window.ButtonWindow;
 import java.awt.Point;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -40,6 +40,7 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -68,11 +69,17 @@ import javax.swing.KeyStroke;
  * @version 1.0
  */
 public class PhotoAlbumViewer extends JFrame {
-
-    private Album album;
+    public static void main(String[] args){
+        ArrayList<Photo> photos = new ArrayList<>();
+        photos.add(new Photo("Photo Title", new ImageIcon("Path-To-Photo")));
+        photos.add(new Photo("Photo Title", new ImageIcon("Path-To-Photo")));
+        Album info = new Album("My Album", photos);
+        PhotoAlbumViewer viewer = new PhotoAlbumViewer(info);
+        viewer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        viewer.setVisible(true);
+    }
+    
     private PhotoViewer photoViewer;
-    private int isConfirmed;
-
     private Panel panel;
 
     public PhotoAlbumViewer(Album info) {
@@ -111,14 +118,6 @@ public class PhotoAlbumViewer extends JFrame {
         setVisible(true);
     }
 
-    public Container getFrame() {
-        return this;
-    }
-
-    public int getConfirm() {
-        return isConfirmed;
-    }
-
     private class Panel extends JPanel implements MouseListener {
 
         private ImageViewer imageViewer;
@@ -155,7 +154,6 @@ public class PhotoAlbumViewer extends JFrame {
 
                 @Override
                 public void dragEnter(DropTargetDragEvent event) {
-
                 }
 
                 @Override
@@ -200,8 +198,6 @@ public class PhotoAlbumViewer extends JFrame {
                     addImagesPanel.setVisible(true);
                 }
             });
-//                options.add(addImages);
-//                bar.add(options);
             add(imageViewer);
 
         }
@@ -239,7 +235,7 @@ public class PhotoAlbumViewer extends JFrame {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            System.out.println("Poop");
+            
         }
 
         @Override
@@ -342,28 +338,38 @@ public class PhotoAlbumViewer extends JFrame {
             add(scrollPane);
 
             rightClickSelectedIndexes = new ArrayList<>();
+            
+            Action open = new Action(" Open                          ") {
 
-            rightSingleClickMenu = new ButtonWindow(gothic_font2, new String[]{" Open                          ", " Remove                          "}, 15) {
                 @Override
-                public void selector(int i) {
-                    update(null, false);
-                    if (i == 0) {
-                        photoViewer = new PhotoViewer(info.getPhotos().get(hoveringIndex));
-                    } else if (i == 1) {
-                        info.remove(rightClickSelectedIndexes.get(0));
-                    }
+                public void action(ActionEvent event) {
+                    rightSingleClickMenu.update(null, false);
+                    photoViewer = new PhotoViewer(info.getPhotos().get(hoveringIndex));
                 }
             };
+            Action remove = new Action(" Remove                          ") {
 
-            multiSingleClickMenu = new ButtonWindow(gothic_font2, new String[]{" Remove                          "}, 15) {
                 @Override
-                public void selector(int i) {
-                    update(null, false);
-                    if (i == 0) {
-                        info.remove(rightClickSelectedIndexes);
-                    }
+                public void action(ActionEvent event) {
+                    rightSingleClickMenu.update(null, false);
+                    info.remove(rightClickSelectedIndexes.get(0));
                 }
             };
+            ArrayList<Action> actions = new ArrayList<>();
+            actions.add(open);
+            actions.add(remove);
+            rightSingleClickMenu = new ButtonWindow(gothic_font2, actions, 15);
+            
+            Action removeMulti = new Action(" Remove                          ") {
+                @Override
+                public void action(ActionEvent event) {
+                    multiSingleClickMenu.update(null, false);
+                    info.remove(rightClickSelectedIndexes);
+                }
+            };
+            ArrayList<Action> multiActions = new ArrayList<>();
+            multiActions.add(removeMulti);
+            multiSingleClickMenu = new ButtonWindow(gothic_font2, multiActions, 15);
         }
 
         public void rightClick(int index) {
@@ -415,6 +421,7 @@ public class PhotoAlbumViewer extends JFrame {
                 }
             }
             if (button == MouseEvent.BUTTON3) {
+                System.out.println(selectedIndexes.size());
                 if (!selectedIndexes.isEmpty()) {
                     rightClickSelectedIndexes.clear();
                     if (selectedIndexes.size() == 1) {
@@ -479,7 +486,7 @@ public class PhotoAlbumViewer extends JFrame {
                     x = ogX;
                     y += sizeToIncreaseBy;
                 }
-                if (Shape.intersects(e.getX(), e.getY(), 1, 1, x, y, size, size)){
+                if (ShapeUtil.intersects(e.getX(), e.getY(), 1, 1, x, y, size, size)){
                     hoveringIndex = i;
                     break;
                 } else {

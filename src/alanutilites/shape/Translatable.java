@@ -24,21 +24,12 @@
 
 package alanutilites.shape;
 
-import java.awt.Graphics2D;
-
 /**
  *
  * @author Alan Tsui
  */
-public interface Shape extends Transformable{
-    public double getArea();
+public interface Translatable {
+    public void translate(double x, double y);
     
-    public double getPerimeter();
-    
-    public boolean contains(double x, double y);
-    
-    public Point getCenter();
-    
-    public void render(Graphics2D gd, int x, int y, double scale);
-    
+    public void translate(Point point);
 }

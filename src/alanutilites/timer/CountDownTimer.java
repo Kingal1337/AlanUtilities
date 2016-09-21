@@ -22,6 +22,9 @@
  */
 package alanutilites.timer;
 
+import java.awt.event.ActionEvent;
+import javax.swing.Timer;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 /**
@@ -30,7 +33,7 @@ import java.util.ArrayList;
  * @since 1.0
  * @version 1.0
  */
-public abstract class CountDownTimer implements ActionListener{    
+public class CountDownTimer implements ActionListener{    
     private long hours;
     private long minutes;
     private long seconds;
@@ -50,8 +53,8 @@ public abstract class CountDownTimer implements ActionListener{
         
     }
     
-    private void countDown(){   
-        System.out.println(seconds);
+    private void countDown(){
+        countDownAction(hours, minutes, seconds);
         if(seconds <= 0 && minutes > 0){
             minutes -- ;
             seconds = 60;
@@ -66,15 +69,19 @@ public abstract class CountDownTimer implements ActionListener{
         }
         seconds--;
     }
+    
+    public void countDownAction(long hours, long minutes, long seconds){}
 
     @Override
-    public void actionPerformed() {
+    public void actionPerformed(ActionEvent e) {
         countDown();
     }
     
     private void fireActionPerformed(){
         for(int i=0;i<listeners.size();i++){
-            listeners.get(i).actionPerformed();
+            listeners.get(i).actionPerformed(new ActionEvent(CountDownTimer.this, 0, "ActionCommand",
+                                                    System.currentTimeMillis(),
+                                                    0));
         }
     }
     

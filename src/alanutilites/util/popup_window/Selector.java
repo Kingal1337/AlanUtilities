@@ -22,23 +22,14 @@
  * THE SOFTWARE.
  */
 
-package alanutilites.shape;
-
-import java.awt.Graphics2D;
+package alanutilites.util.popup_window;
 
 /**
  *
  * @author Alan Tsui
+ * @version 1.0
+ * @since 1.2
  */
-public interface Shape extends Transformable{
-    public double getArea();
-    
-    public double getPerimeter();
-    
-    public boolean contains(double x, double y);
-    
-    public Point getCenter();
-    
-    public void render(Graphics2D gd, int x, int y, double scale);
-    
+public interface Selector {
+    public abstract void selector(int index);
 }

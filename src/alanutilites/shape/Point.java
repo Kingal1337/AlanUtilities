@@ -51,8 +51,8 @@ public class Point {
         y += deltaY;
     }
     
-    public void rotate(Point origin,  double degrees){
-        Point point = Shape.rotatePoint(origin, this, degrees);
+    public void rotate(Point origin, double degrees){
+        Point point = ShapeUtil.rotatePoint(origin, this, degrees);
         x = point.x;
         y = point.y;
     }

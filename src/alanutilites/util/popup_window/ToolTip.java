@@ -23,7 +23,7 @@
 package alanutilites.util.popup_window;
 
 import alanutilites.util.SystemUtil;
-import alanutilites.util.Text;
+import alanutilites.util.text.Text;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;

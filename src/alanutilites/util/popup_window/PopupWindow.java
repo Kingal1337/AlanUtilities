@@ -88,7 +88,6 @@ public abstract class PopupWindow implements Serializable{
         int xx = 0;
         int yy = 0;
         
-//        System.out.println("Duh Window "+window);
         if(mouseXY != null){
             xx = (int) mouseXY.x;
             yy = (int) mouseXY.y;
@@ -110,7 +109,6 @@ public abstract class PopupWindow implements Serializable{
     }
     
     public abstract void paintMethod(Graphics2D gd);
-
     
     private void updateColors(){        
         panel.setBackground(backgroundColor);

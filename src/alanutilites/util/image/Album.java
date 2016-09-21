@@ -22,8 +22,9 @@
  */
 package alanutilites.util.image;
 
-import autil.Arrays;
+import alanutilites.util.Arrays;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * 
@@ -50,6 +51,7 @@ public class Album {
     }
     
     public void remove(ArrayList<Integer> indexes){
+        Collections.sort(indexes);
         for(int i=indexes.size()-1;i>=0;i--){
             remove(indexes.get(i));
         }
@@ -57,7 +59,7 @@ public class Album {
     
     public Photo remove(int index){
         if(Arrays.doesIndexExist(photos.toArray(), index)){
-            return photos.get(index);
+            return photos.remove(index);
         }
         return null;
     }

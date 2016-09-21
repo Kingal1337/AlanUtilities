@@ -33,7 +33,6 @@ import javax.swing.JFrame;
  * @version 1.0
  */
 public class AltTabStopper{
-
     private boolean working;
     private boolean started;
     private boolean running;
@@ -71,7 +70,7 @@ public class AltTabStopper{
                 while (working) {
                     System.out.print("");
                     if(running){
-                        robot.keyRelease(KeyEvent.VK_ALT);
+                        robot.keyRelease(KeyEvent.VK_AT);
                         robot.keyRelease(KeyEvent.VK_TAB);
                         frame.requestFocus();
                         try {

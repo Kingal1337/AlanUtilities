@@ -38,7 +38,7 @@ public class Calculator {
     private static final String NON_FOREIGN_CHARACTERS = "1234567890.+-*/%^()E ";
 
     private static enum OPERATION {
-        ADD, SUBTRACT, MULTIPLY, DIVIVDE, MOD, POW, OPEN_PARENTHESIS, CLOSED_PARENTHESIS, NUMBER
+        ADD, SUBTRACT, MULTIPLY, DIVIDE, MOD, POW, OPEN_PARENTHESIS, CLOSED_PARENTHESIS, NUMBER
     }
     
     /**
@@ -172,7 +172,7 @@ public class Calculator {
             return OPERATION.MULTIPLY;
         }
         else if(op == 3){
-            return OPERATION.DIVIVDE;
+            return OPERATION.DIVIDE;
         }
         else if(op == 4){
             return OPERATION.MOD;
@@ -270,7 +270,7 @@ public class Calculator {
         else if(operation == OPERATION.MULTIPLY){
             return firstNumber * secondNumber;
         }
-        else if(operation == OPERATION.DIVIVDE){
+        else if(operation == OPERATION.DIVIDE){
             return firstNumber / secondNumber;
         }
         else if(operation == OPERATION.POW){

@@ -22,7 +22,7 @@
  */
 package alanutilites.util.random;
 
-import autil.Arrays;
+import alanutilites.util.Arrays;
 import java.awt.Color;
 
 /**
@@ -32,6 +32,7 @@ import java.awt.Color;
  * @version 1.0
  */
 public class Random {
+    private static final String MAX_LONG_LENGTH = "000000000000000000";
     private static java.util.Random random = new java.util.Random();
     
     /**
@@ -39,6 +40,45 @@ public class Random {
      */
     private Random(){}
     
+    /**
+     * Generates a random Long of a certain size
+     * 
+     * Max length of the number is 9
+     * 
+     * Note : the parameter number does not mean anything only the length of the number is used
+     * EX : 
+     * randomSizeNumber("00000") - this will generate a 5 digit number
+     * randomSizeNumber("ABCDE") - this will also generate a 5 digit number
+     * randomSizeNumber("5123451") - this will generate a 7 digit number
+     * @param number  the length of the number
+     * @return  returns a random Long of a certain length; if length is greater than 9 then returns a Long with a length of 9
+     */
+    public static long randomSizeNumber(String number){
+        number = number.length() >= MAX_LONG_LENGTH.length() ? MAX_LONG_LENGTH : number;
+        String string = "";
+        for(int i=0;i<number.length();i++){
+            string += randomNumber(9);
+        }
+        return Long.parseLong(string);
+    }
+    
+    /**
+     * Gets a random number from a 0 to a maximum number(inclusive)
+     * @param max  the maximum number (inclusive)
+     * @return  returns a random number from 0 to maximum
+     */    
+    public static int randomNumber(int max){
+        return randomNumber(0, max);
+    }
+    
+    /**
+     * Gets a random number from a 0 to a maximum number(inclusive)
+     * @param max  the maximum number (inclusive)
+     * @return  returns a random number from 0 to maximum
+     */
+    public static long randomNumber(long max){
+        return randomNumber(0, max);
+    }    
     
     /**
      * Gets a random number from a minimum number(inclusive) to a maximum number(inclusive)
@@ -61,24 +101,29 @@ public class Random {
     }
     
     /**
-     * Generates a random letter from the alphabet
+     * Generates a random letter from the alphabet (lowercase and uppercase letters)
      * @return  returns a random letter
      */
     public static char randomLetter(){
-        char[] combineArray = Arrays.combine(Arrays.LOWER_CASE_LETTERS,Arrays.UPPER_CASE_LETTERS);
-        return combineArray[randomNumber(0,combineArray.length-1)];
+        return randomCharacter(Arrays.combine(Arrays.LOWER_CASE_LETTERS,Arrays.UPPER_CASE_LETTERS));
     }
     
     /**
-     * Generates a random color
-     * @return  returns a random color
+     * Generates a string from a string of characters
+     * @param string  the character set
+     * @return  returns a random letter from the string of characters
      */
-    public static Color randomColor(){
-        int r = randomNumber(0, 255);
-        int g = randomNumber(0, 255);
-        int b = randomNumber(0, 255);
-        Color color = new Color(r,g,b);
-        return color;
+    public static char randomCharacter(String string){
+        return randomCharacter(string.toCharArray());
+    }
+    
+    /**
+     * Generates a string from an array of characters
+     * @param characters  the character set
+     * @return  returns a random letter from the array of characters
+     */
+    public static char randomCharacter(char[] characters){
+        return characters[randomNumber(characters.length-1)];
     }
     
     /**
@@ -86,8 +131,7 @@ public class Random {
      * @return  returns a random character
      */
     public static char randomCharacter(){
-        char[] combineArray = Arrays.combine(Arrays.combine(Arrays.LOWER_CASE_LETTERS,Arrays.UPPER_CASE_LETTERS),Arrays.PUNCTUATION);
-        return combineArray[randomNumber(0,combineArray.length-1)];
+        return randomCharacter(Arrays.combine(Arrays.combine(Arrays.LOWER_CASE_LETTERS,Arrays.UPPER_CASE_LETTERS),Arrays.PUNCTUATION));
     }
     
     /**
@@ -103,5 +147,37 @@ public class Random {
             string.append(randomCharacter());
         }
         return string.toString();
+    }
+    
+    /**
+     * Generates a random string at a set size from a string of character
+     * EX:
+     * <code>
+     * string - "abcdef123"
+     * size - 5
+     * random string - bd3c1
+     * </code>
+     * @param string  the character set
+     * @param size  the size of the random string
+     * @return  returns a random string 
+     */
+    public static String randomString(String string, int size){
+        StringBuilder builder = new StringBuilder();
+        for(int i=0;i<size;i++){
+            builder.append(randomCharacter(string));
+        }
+        return builder.toString();
+    }
+    
+    /**
+     * Generates a random color
+     * @return  returns a random color
+     */
+    public static Color randomColor(){
+        int r = randomNumber(0, 255);
+        int g = randomNumber(0, 255);
+        int b = randomNumber(0, 255);
+        Color color = new Color(r,g,b);
+        return color;
     }
 }

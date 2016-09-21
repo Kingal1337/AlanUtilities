@@ -22,11 +22,12 @@
  */
 package alanutilites.virus;
 
-import alanutilites.timer.ActionListener;
 import alanutilites.timer.Timer;
 import alanutilites.util.SystemUtil;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 
 /**
@@ -53,25 +54,29 @@ public class Frame extends JFrame implements ActionListener{
         setAlwaysOnTop(true);
         setUndecorated(true);
         setExtendedState(getExtendedState()|JFrame.MAXIMIZED_BOTH);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         
         timer = new Timer(20, this);
     }
     
     @Override
-    public void actionPerformed(){
+    public void actionPerformed(ActionEvent e){
         action();
     }
     
-    public void action(){        
-        setFocusableWindowState(true);
-        setExtendedState(getExtendedState()|JFrame.MAXIMIZED_BOTH);
+    public void action(){
+        if(!debugMode){
+            setFocusableWindowState(true);
+            requestFocus(true);
+            setExtendedState(getExtendedState()|JFrame.MAXIMIZED_BOTH );  
+        }
     }
     
     public void start(){
         started = true;
-        if(allowAltTab){
-//            stopper.start();
+        if(allowAltTab && !debugMode){
+            stopper.start();
         }
         setVisible(true);
         if(SystemUtil.isMac()){
@@ -93,12 +98,17 @@ public class Frame extends JFrame implements ActionListener{
     
     public void debugMode(boolean debug){
         if(!isVisible()){
-            debugMode = debug;
-            if(debug){
-                setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            if(!started){
+                debugMode = debug;
+                if(debug){
+                    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                }
+                else{
+                    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                }
             }
             else{
-                setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                debugMessage("Program already running, cannot change debug state");
             }
         }
         else{
@@ -121,10 +131,6 @@ public class Frame extends JFrame implements ActionListener{
 
     public boolean isDebugMode() {
         return debugMode;
-    }
-
-    public void setDebugMode(boolean debugMode) {
-        this.debugMode = debugMode;
     }
     
     public void setTerminateOnClose(boolean terminate){
@@ -152,5 +158,4 @@ public class Frame extends JFrame implements ActionListener{
             System.err.println(message);
         }
     }
-        
 }

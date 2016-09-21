@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2016 Alan Tsui.
+ * Copyright 2016 500120133.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,23 +22,35 @@
  * THE SOFTWARE.
  */
 
-package alanutilites.shape;
-
-import java.awt.Graphics2D;
+package alanutilites.util.collision;
 
 /**
  *
  * @author Alan Tsui
  */
-public interface Shape extends Transformable{
-    public double getArea();
+public class CollisionBox2D extends CollisionBox{
+
+    public CollisionBox2D(int x, int y, int width, int height, boolean passable) {
+        super(x, y, width, height, passable);
+    }
     
-    public double getPerimeter();
+    public CollisionBox2D(CollisionBox2D box){
+        super(box);
+    }
     
-    public boolean contains(double x, double y);
+    public int getX2D(){
+        return (int)super.getX();
+    }
     
-    public Point getCenter();
+    public int getY2D(){
+        return (int)super.getY();
+    }
     
-    public void render(Graphics2D gd, int x, int y, double scale);
+    public int getWidth2D(){
+        return (int)super.getWidth();
+    }
     
+    public int getHeight2D(){
+        return (int)super.getHeight();
+    }
 }

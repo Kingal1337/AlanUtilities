@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  */
-package alanutilites.util;
+package alanutilites.util.text;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -55,7 +55,7 @@ public class Text {
      * string width is less than width than it will return the original string
      */
     public static String ellipsisText(String string, int width, Font font){
-        if(string.isEmpty() || getLengthOfString(string, font) < width){
+        if(string == null || font == null || string.isEmpty() || getLengthOfString(string, font) < width){
             return string;
         }
         if(width < getLengthOfString(string.charAt(0)+"...", font)){
@@ -101,11 +101,13 @@ public class Text {
      * the next space
      * @param originalString  the long long message
      * @param width  the space the message needs to fit into
-     * @param gd  the Graphics2D
+     * @param font  the font you are using
      * @return  returns a array of strings that fits the width
      */
-    public static String[] prettyStringWrap(String originalString, int width, Graphics2D gd){
-        Font font = gd.getFont();
+    public static String[] prettyStringWrap(String originalString, int width, Font font){
+        if(originalString == null || font == null){
+            return null;
+        }
         ArrayList<String> strings = new ArrayList<>();
         if(getLengthOfString(originalString,font) > width){
             String[] words = originalString.split(" ");
@@ -117,7 +119,7 @@ public class Text {
                         strings.add(nextString);
                         nextString = "";
                     }
-                    String[] newString = stringWrap(currentWord,width,gd);
+                    String[] newString = stringWrap(currentWord,width,font);
                     for(int j=0;j<newString.length;j++){
                         strings.add(newString[j]);
                     }
@@ -141,15 +143,25 @@ public class Text {
     }
     
     /**
-     * Warps a string around a certain width, Will split in the middle of a word
-     * @param originalString  the string that is going to be used
-     * @param width  the width of the text area
+     * Splits strings without cutting into the middle of a word splits at 
+     * the next space
+     * @param originalString  the long long message
+     * @param width  the space the message needs to fit into
      * @param gd  the Graphics2D
      * @return  returns a array of strings that fits the width
      */
-    public static String[] stringWrap(String originalString,int width,Graphics2D gd){
-//        String formattedString = "";
-        Font font = gd.getFont();
+    public static String[] prettyStringWrap(String originalString, int width, Graphics2D gd){
+        return prettyStringWrap(originalString, width, gd.getFont());
+    }
+    
+    /**
+     * Warps a string around a certain width, Will split in the middle of a word
+     * @param originalString  the string that is going to be used
+     * @param width  the width of the text area
+     * @param font  the font you are using
+     * @return  returns a array of strings that fits the width
+     */
+    public static String[] stringWrap(String originalString, int width, Font font){
         String originalTempString = originalString;
         String tempString = "";
         int lengthOfString = originalString.length();
@@ -179,6 +191,17 @@ public class Text {
             return new String[]{originalString};
         }
         return strings.toArray(new String[strings.size()]);
+    }
+    
+    /**
+     * Warps a string around a certain width, Will split in the middle of a word
+     * @param originalString  the string that is going to be used
+     * @param width  the width of the text area
+     * @param gd  the Graphics2D
+     * @return  returns a array of strings that fits the width
+     */
+    public static String[] stringWrap(String originalString,int width,Graphics2D gd){
+        return stringWrap(originalString, width, gd.getFont());
     }
     
     /**
@@ -242,7 +265,7 @@ public class Text {
         for (int i = 0; i < lastIndex; i++) {
             result[i] = string.substring(j, j + interval);
             j += interval;
-        } //Add the last bit
+        }
         result[lastIndex] = string.substring(j);
 
         return result;
@@ -330,6 +353,20 @@ public class Text {
     public static void drawCenteredString(String string,int x,int y, int width, int height, Graphics2D gd) {
         Point point = getStringPoint(string, x, y, width, height, gd);
         gd.drawString(string, point.x, point.y);
+    }
+    
+    /**
+     * Draws a string in the middle-left of the rectangle
+     * @param string  string that will be aligned to the left
+     * @param x  the x of the rectangle
+     * @param y  the y of the rectangle
+     * @param width  the width of the rectangle
+     * @param height  the height of the rectangle
+     * @param gd  the graphics2d from the JComponent
+     */
+    public static void drawCenteredLeftString(String string,int x,int y, int width, int height, Graphics2D gd) {
+        Point point = getStringPoint(string, x, y, width, height, gd);
+        gd.drawString(string, x, point.y);
     }
     
     /**

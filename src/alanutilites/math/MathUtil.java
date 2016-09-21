@@ -22,7 +22,7 @@
  */
 package alanutilites.math;
 
-import autil.Arrays;
+import alanutilites.util.Arrays;
 
 /**
  * 
@@ -104,7 +104,10 @@ public class MathUtil {
      * @return  returns the biggest number from an array. if array is empty returns 0
      */
     public static double getMax(double[] array){
-        double maxNumber = 0;
+        if(Arrays.isArrayEmpty(array)){
+            return 0;
+        }
+        double maxNumber = array[0];
         for(double number : array){
             maxNumber = getMax(maxNumber,number);
         }

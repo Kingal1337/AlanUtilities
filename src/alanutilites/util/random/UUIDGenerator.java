@@ -22,6 +22,7 @@
  */
 package alanutilites.util.random;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 
 /**
@@ -31,43 +32,63 @@ import java.util.HashMap;
  * @version 1.0
  */
 public class UUIDGenerator {
-    private final int length;
-    private final HashMap<String, Integer> previousIDs;
+    private final String DEFAULT_VALID_CHARACTERS = "0123456789abcdef";
+    private String validCharacters; 
+    private final HashMap<String, String> previousIDs;
+    private BigInteger numberOfCombinations;
+    private BigInteger counter;
     
     /**
      * Constructs a new UUID Generator
-     * @param length  the length of the UUID (Max Length : 19)
-     * EX : 
-     * length : 5  = (52048)
-     * length : 1  = (9)
-     * length : 9  = (192756236)
-     * length : 19  = (9223372036854775807)
      */
-    public UUIDGenerator(final int length) {
-        this.length = length;
+    public UUIDGenerator() {
         previousIDs = new HashMap<>();
+        validCharacters = DEFAULT_VALID_CHARACTERS.replaceAll("(.)\\1{1,}", "$1");
+        numberOfCombinations = BigInteger.valueOf(validCharacters.length());
+        numberOfCombinations = numberOfCombinations.pow(32);
+        counter = BigInteger.ZERO;
+    }
+    
+    /**
+     * Constructs a new UUID Generator
+     * @param characters  the character set for the generator
+     */
+    public UUIDGenerator(String characters) {
+        previousIDs = new HashMap<>();
+        validCharacters = characters.replaceAll("(.)\\1{1,}", "$1");
+        numberOfCombinations = BigInteger.valueOf(validCharacters.length());
+        numberOfCombinations = numberOfCombinations.pow(32);
+        counter = BigInteger.ZERO;
     }
     
     /**
      * Generates an UUID
      * @return  returns a UUID that has never been used before
+     * if all possible UUID's are used up will return null
      */
-    public long generateUDID() {
-        final String id = Random.randomNumber(0, length) + "";
-        if (id.length() != length) {
-            return generateUDID();
-        } 
-        else {
-            final int idNum = Integer.parseInt(id);
-            if (!previousIDs.containsKey(idNum+"")) {
-                previousIDs.put(idNum+"",+idNum);
-                return idNum;
-            } 
-            else if (previousIDs.containsKey(idNum+"")) {
+    public String generateUDID() {
+        if(counter == numberOfCombinations){
+            return null;
+        }
+        else{
+            StringBuilder builder = new StringBuilder();
+            builder.append(Random.randomString(validCharacters, 8));
+            builder.append("-");
+            builder.append(Random.randomString(validCharacters, 4));
+            builder.append("-");
+            builder.append(Random.randomString(validCharacters, 4));
+            builder.append("-");
+            builder.append(Random.randomString(validCharacters, 4));
+            builder.append("-");
+            builder.append(Random.randomString(validCharacters, 12));
+            String string = builder.toString();
+            if(previousIDs.containsKey(string)){
                 return generateUDID();
             }
-            else {
-                return -1;
+            else{
+                counter = counter.add(BigInteger.ONE);
+                previousIDs.put(string, string);
+                return builder.toString();
             }
         }
     }

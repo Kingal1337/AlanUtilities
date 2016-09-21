@@ -49,7 +49,7 @@ import javax.swing.Timer;
  */
 public class ScreenMelter extends Frame{
     public static void main(String[] args){        
-        ScreenMelter melter = new ScreenMelter(Color.BLACK, 1, 1, "1234");
+        ScreenMelter melter = new ScreenMelter(Color.BLACK, 1, 1, "password");
         melter.debugMode(true);
         melter.setTerminateOnClose(true);
         melter.start();
@@ -88,10 +88,11 @@ public class ScreenMelter extends Frame{
         password = "";
         allColumns = new ArrayList<>();
         
+        setType(Type.UTILITY);
         panel = new ScreenMelterPanel(color);
         add(panel);
         
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         KeyboardFocusManager manager
                 = KeyboardFocusManager.getCurrentKeyboardFocusManager();
@@ -139,7 +140,7 @@ public class ScreenMelter extends Frame{
     }
     
     private void startAction(){              
-        System.out.println("Hours "+hours+" Minutes "+minutes+" Seconds "+seconds);
+//        System.out.println("Hours "+hours+" Minutes "+minutes+" Seconds "+seconds);
         if(seconds <= 0 && minutes > 0){
             minutes--;
             seconds = 60;

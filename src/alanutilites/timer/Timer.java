@@ -22,6 +22,8 @@
  */
 package alanutilites.timer;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,13 +40,14 @@ public class Timer{
     private boolean running;
     private ArrayList<ActionListener> listeners;
     
-    private int realDelay;
+    private int timeToTake;
     
-    long startTime = 0;
-    long acum = 0;
-    long timeItTookTotal = 0;
-    long dif = 0, timeItTook = 0, timeToTake = 0;
-    int delay = 0;
+    private long startTime;
+    private long acum;
+    private long timeItTookTotal;
+    private long dif;
+    private long timeItTook;
+    private int delay;
     
     /**
      * Creates a timer
@@ -53,7 +56,7 @@ public class Timer{
      */
     public Timer(int delay, ActionListener listener){
         listeners = new ArrayList<>();
-        realDelay = delay;
+        timeToTake = delay;
         runnable = new TimerRunnable();
         thread = new Thread(runnable);
         thread.start();
@@ -64,15 +67,32 @@ public class Timer{
      * Starts/Resumes the timer
      */
     public void start(){
-        running = true;
-        System.out.println(running);
+        if(!running){
+            startTime = System.nanoTime();
+            running = true;
+        }
     }
     
     /**
      * Stops/Pauses the timer
      */
     public void stop(){
-        running = false;
+        if(running){
+            startTime = 0;
+            acum = 0;
+            timeItTookTotal = 0;
+            dif = 0;
+            timeItTook = 0;
+            delay = 0;
+            running = false;
+        }
+    }
+    
+    public void restart(){
+        if(isRunning()){
+            stop();
+            start();
+        }
     }
     
     /**
@@ -88,7 +108,7 @@ public class Timer{
      * @param delay  the amount of time in milliseconds
      */
     public void setDelay(int delay){
-        this.realDelay = delay;
+        this.timeToTake = delay;
     }
     
     /**
@@ -96,7 +116,7 @@ public class Timer{
      * @return  returns the delay set for the timer
      */
     public int getDelay(){
-        return realDelay;
+        return timeToTake;
     }
     
     /**
@@ -119,54 +139,43 @@ public class Timer{
     
     private void fireActionPerformed(){
         for(int i=0;i<listeners.size();i++){
-            listeners.get(i).actionPerformed();
+            listeners.get(i).actionPerformed(new ActionEvent(Timer.this, 0, "ActionCommand",
+                                                    System.currentTimeMillis(),
+                                                    0));
         }
     }
     
-    private void runnable(){        
+    private void runnable(){
         startTime = System.nanoTime();
-        System.out.println("Started: " + startTime);
         while(true){
             System.out.print("");
             if(running){
                 fireActionPerformed();
                 
-                timeToTake = realDelay;
                 acum += timeToTake;
                 
-//                System.out.println("Acum " + acum);
                 timeItTook = (acum - ((System.nanoTime() - startTime) / 1000000));
                 timeItTookTotal += timeItTook;
                 
-//                System.out.println("Time the char should take: " + timeToTake);
-//                System.out.println("Time it took: " + timeItTook);
                 dif = (timeToTake - timeItTook);
-//                System.out.println("Difference: " + dif);
                 delay = (int) (timeToTake - dif);
 
                 if (delay < 1) {
                     delay = 1;
                 }
-//                System.out.println("Delay : "+delay);
                 try {
                     Thread.sleep(delay);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Timer.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                            
-            }
-            else{
-
+                }        
             }
         }
     }
     
     private class TimerRunnable implements Runnable{
-
         @Override
         public void run() {
             runnable();
         }
-        
     }
 }
