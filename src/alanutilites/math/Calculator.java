@@ -19,12 +19,12 @@
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 package alanutilites.math;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  *
@@ -123,7 +123,7 @@ public class Calculator {
                             if(b.matches(regex) && a.matches("[-+]+")){
                                 orig = a;
                             }
-                            else if(orig != null && orig.equals("-")){
+                            if(orig != null && orig.equals("-")){
                                 values.add(orig + a);
                                 orig = null;
                             }
@@ -162,41 +162,31 @@ public class Calculator {
     }    
     
     private static OPERATION getOperation(int op){
-        if(op == 0){
-            return OPERATION.ADD;
-        }
-        else if(op == 1){
-            return OPERATION.SUBTRACT;
-        }
-        else if(op == 2){
-            return OPERATION.MULTIPLY;
-        }
-        else if(op == 3){
-            return OPERATION.DIVIDE;
-        }
-        else if(op == 4){
-            return OPERATION.MOD;
-        }
-        else if(op == 5){
-            return OPERATION.POW;
-        }
-        else if(op == 6){
-            return OPERATION.OPEN_PARENTHESIS;
-        }
-        else if(op == 7){
-            return OPERATION.CLOSED_PARENTHESIS;
-        }
-        else{            
-            return OPERATION.NUMBER;
+        switch (op) {
+            case 0:
+                return OPERATION.ADD;
+            case 1:
+                return OPERATION.SUBTRACT;
+            case 2:
+                return OPERATION.MULTIPLY;
+            case 3:
+                return OPERATION.DIVIDE;
+            case 4:
+                return OPERATION.MOD;
+            case 5:
+                return OPERATION.POW;
+            case 6:
+                return OPERATION.OPEN_PARENTHESIS;
+            case 7:
+                return OPERATION.CLOSED_PARENTHESIS;
+            default:
+                return OPERATION.NUMBER;
         }
     }
     
     private static CalculatorResult evaluate(String[] values){
         values = shuntingYard(values);
-        
-            System.out.println(Arrays.toString(values));
         String postFix = postFix(values);
-            System.out.println(postFix);
         return !postFix.equals("ERROR") ? new CalculatorResult("Success", Double.parseDouble(postFix)) : new CalculatorResult("Error", 0);
     }
     
@@ -261,38 +251,39 @@ public class Calculator {
     }
     
     private static double doOperation(double firstNumber, double secondNumber, OPERATION operation){
-        if(operation == OPERATION.ADD){
-            return firstNumber + secondNumber;
+        if(null != operation)
+            switch (operation) {
+            case ADD:
+                return firstNumber + secondNumber;
+            case SUBTRACT:
+                return firstNumber - secondNumber;
+            case MULTIPLY:
+                return firstNumber * secondNumber;
+            case DIVIDE:
+                return firstNumber / secondNumber;
+            case POW:
+                return Math.pow(firstNumber, secondNumber);
+            case MOD:
+                return firstNumber % secondNumber;
+            default:
+                return 0;
         }
-        else if(operation == OPERATION.SUBTRACT){
-            return firstNumber - secondNumber;
-        }
-        else if(operation == OPERATION.MULTIPLY){
-            return firstNumber * secondNumber;
-        }
-        else if(operation == OPERATION.DIVIDE){
-            return firstNumber / secondNumber;
-        }
-        else if(operation == OPERATION.POW){
-            return Math.pow(firstNumber, secondNumber);
-        }
-        else if(operation == OPERATION.MOD){
-            return firstNumber % secondNumber;
-        }
-        else{
-            return 0;
-        }
+        return 0;
     }
     
     private static int getPriority(String op) {
-        if(op.equals("+") || op.equals("-")){
-            return 1;
-        }
-        else if(op.equals("*") || op.equals("/") || op.equals("%")){
-            return 2;
-        }
-        else if(op.equals("^")){
-            return 3;
+        switch (op) {
+            case "+":
+            case "-":
+                return 1;
+            case "*":
+            case "/":
+            case "%":
+                return 2;
+            case "^":
+                return 3;
+            default:
+                break;
         }
         return 0;
     }

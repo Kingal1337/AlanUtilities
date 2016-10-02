@@ -19,6 +19,7 @@
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 package alanutilites.util.image;
 
@@ -32,6 +33,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
@@ -71,8 +73,8 @@ import javax.swing.KeyStroke;
 public class PhotoAlbumViewer extends JFrame {
     public static void main(String[] args){
         ArrayList<Photo> photos = new ArrayList<>();
-        photos.add(new Photo("Photo Title", new ImageIcon("Path-To-Photo")));
-        photos.add(new Photo("Photo Title", new ImageIcon("Path-To-Photo")));
+        photos.add(new Photo("Photo Title", new ImageIcon("Path-To-File")));
+        photos.add(new Photo("Photo Title", new ImageIcon("Path-To-File")));
         Album info = new Album("My Album", photos);
         PhotoAlbumViewer viewer = new PhotoAlbumViewer(info);
         viewer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -283,6 +285,10 @@ public class PhotoAlbumViewer extends JFrame {
                 public void paintComponent(Graphics g) {
                     super.paintComponent(g);
                     Graphics2D gd = (Graphics2D) g;
+                    
+                    gd.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                    gd.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                    gd.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
                     ArrayList<Photo> photos = info.getPhotos();
 
